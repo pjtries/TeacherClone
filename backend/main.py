@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 import firebase_admin
 from firebase_admin import credentials
 
@@ -24,6 +26,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Ensure static directory exists
+os.makedirs("backend/static/audio", exist_ok=True)
+
+# Mount static files for audio/images
+app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 
 app.include_router(auth.router, prefix="/auth")
 app.include_router(chat.router, prefix="/chat")
