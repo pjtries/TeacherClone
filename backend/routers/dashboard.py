@@ -1,12 +1,14 @@
 from fastapi import APIRouter
+from ..schemas.dashboard_schema import DashboardStats
+from ..services.dashboard_service import dashboard_service
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=DashboardStats)
 def get_dashboard():
-    return {
-        "total_questions": 120,
-        "top_topics": ["Deadlock"],
-        "weak_areas": ["Memory"],
-    }
+    """
+    Returns analytics and stats for the teacher dashboard.
+    Delegates to DashboardService.
+    """
+    return dashboard_service.get_stats()

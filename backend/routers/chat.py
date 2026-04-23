@@ -1,18 +1,24 @@
 from fastapi import APIRouter
 from fastapi.responses import PlainTextResponse
+from ..schemas.chat_schema import ChatRequest, ChatResponse
+from ..services import chat_service
 
 router = APIRouter()
 
 
-@router.post("/ask")
-def ask():
-    return {
-        "answer": "This is a mock AI response.",
-        "source": "Lecture Notes",
-        "confidence": 0.9,
-    }
+@router.post("/ask", response_model=ChatResponse)
+def ask(request: ChatRequest):
+    """
+    Hands over the question to the chat service for processing.
+    Clean Architecture: Router handles HTTP, Service handles logic.
+    """
+    result = chat_service.generate_answer(request.question)
+    return result
 
 
 @router.get("/stream", response_class=PlainTextResponse)
 def stream():
-    return "chunk-1\nchunk-2\nchunk-3"
+    """
+    Simple mock streaming endpoint. Ready for Server-Sent Events (SSE) later.
+    """
+    return "Mock Stream: [Thinking...] [Searching Source...] [Generative Response...]"
